@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sokoban</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="constants.js"></script>
+    <script src="main.js"></script>
+    <script src="ui.js"></script>
+    <script>
+        const initialSettings = '[16,12,40]';
+
+        window.addEventListener('load', () => {
+
+            $sok.ui.init(document.getElementById('backstage'), document.getElementById('moveStage'), $sok.main);
+
+            $sok.main.notifyLoaded(initialSettings);
+
+        });
+    </script>
+</head>
+<body>
+<div class="outerContainer">
+    <div class="container">
+        <div id="backstage"></div>
+        <div id="moveStage"></div>
+    </div>
+    <br />
+    <span id="flagCountL">🚩&nbsp;</span><span id="flagCount">0</span>
+</div>
+</body>
+</html>
