@@ -5,19 +5,17 @@
     <title>Sokoban</title>
     <link rel="stylesheet" href="css/styles.css">
     <script src="js/constants.js"></script>
+    <script src="js/gameCreator.js"></script>
     <script src="js/main.js"></script>
     <script src="js/ui.js"></script>
     <script>
-        const initialSettings = '[16,12,40]';
-
         window.addEventListener('load', () => {
-
             $sok.ui.init(document.getElementById('backstage'), document.getElementById('moveStage'), $sok.main);
-
-            $sok.main.notifyLoaded(initialSettings);
-
+            $sok.main.subscribeMoveCount((i) => document.getElementById("moveCount").innerHTML = i);
+            $sok.main.notifyLoaded();
         });
     </script>
+
 </head>
 <body>
 <div class="outerContainer">
@@ -26,7 +24,7 @@
         <div id="moveStage"></div>
     </div>
     <br />
-    <span id="flagCountL">🚩&nbsp;</span><span id="flagCount">0</span>
+    <span id="flagCountL">🚩&nbsp;</span><span id="moveCount">0</span>
 </div>
 </body>
 </html>

@@ -14,7 +14,7 @@ body, html {
 .container {
     position: relative;
     display: inline-block;
-    margin: 40px auto;
+    margin: 20px auto;
     background: #888;
 }
 #moveStage {
@@ -51,6 +51,11 @@ body, html {
     background-position: -320px;
 }
 
+.spot {
+    background-image: url("../img/ground.png");
+    background-position: -128px;
+}
+
 .wall {
     background-image: url("../img/block.png");
     background-position: -64px;
@@ -62,8 +67,13 @@ body, html {
     min-width: 64px;
     min-height: 64px;
     background-image: url("../img/crate.png");
-    background-position: -64px;
+    /*background-position: -64px;*/
+    background-position: -704px;
     position: absolute;
+}
+/* Correctly placed crate */
+.correct {
+    background-position: -64px;
 }
 
 .mario {

@@ -3,30 +3,45 @@ $sok = window.$sok || {};
 
     const GROUND = 0;
     const WALL = 1;
-    const TARGET = 2;
+    const SPOT = 2;
+    const NONE = 4;
 
-    let settings;
     let classMap;
     let fields = [];
+
+    let game;
+    let solved = false;
+    let moved = 0;
 
     let fillBoardUiFn;
     let createNodeUiFn;
     let createMarioFn;
     let createCrateFn;
 
+    let countFn;
+
     function Field(x, y, _type) {
         const me = this;
         this.type = _type;
         let myNode;
-        let hasCrate = false;
+        let crate = null;
 
         this.createNode = createNode;
         this.getNode = () => {return myNode};
-        this.setHasCrate = (has) => {
-            hasCrate = has;
+        this.setCrate = (_crate) => {
+            crate = _crate;
         };
-        this.getHasCrate = () => {
-            return hasCrate;
+        this.getCrate = () => {
+            return crate;
+        };
+        this.detectCorrectCrate = () => {
+            if(crate !== null ) {
+                if(me.type === SPOT && !crate.hasClass(classMap.correct)) {
+                    crate.addClass(classMap.correct);
+                } else if(me.type !== SPOT) {
+                    crate.removeClass(classMap.correct);
+                }
+            }
         };
         function createNode() {
             const element = createNodeUiFn((() => {
@@ -35,12 +50,21 @@ $sok = window.$sok || {};
                         return classMap.ground;
                     case WALL:
                         return classMap.wall;
+                    case SPOT:
+                        return classMap.spot;
+                    case NONE:
+                        return "nothing";
                 }
             })());
             myNode = element;
             return element;
         }
     }
+
+    self.subscribeMoveCount = (fn) => {
+        countFn = fn;
+        return self;
+    };
 
     self.injectFillBoardUiFn = (fn) => {
         fillBoardUiFn = fn;
@@ -72,61 +96,110 @@ $sok = window.$sok || {};
     };
 
     self.marioMightWalk = (recentCoords, dir) => {
+        if(solved) {
+            return false;
+        }
         let targetField;
+        let crateToCarry;
+        let blocked = false;
         switch (dir) {
             case $sok.constants.LEFT:
                 targetField = fields[recentCoords.y][recentCoords.x - 1];
-                console.log(targetField.getHasCrate());
-                return targetField.type === GROUND;
+                crateToCarry = targetField.getCrate();
+                if (crateToCarry) {
+                    blocked = !swapCratesIfGranted(crateToCarry, targetField, fields[recentCoords.y][recentCoords.x - 2]);
+                }
+                break;
             case $sok.constants.UP:
                 targetField = fields[recentCoords.y - 1][recentCoords.x];
-                console.log(targetField.getHasCrate());
-                return targetField.type === GROUND;
+                crateToCarry = targetField.getCrate();
+                if (crateToCarry) {
+                    blocked = !swapCratesIfGranted(crateToCarry, targetField, fields[recentCoords.y - 2][recentCoords.x]);
+                }
+                break;
             case $sok.constants.RIGHT:
                 targetField = fields[recentCoords.y][recentCoords.x + 1];
-                console.log(targetField.getHasCrate());
-                return targetField.type === GROUND;
+                crateToCarry = targetField.getCrate();
+                if (crateToCarry) {
+                    blocked = !swapCratesIfGranted(crateToCarry, targetField, fields[recentCoords.y][recentCoords.x + 2]);
+                }
+                break;
             case $sok.constants.DOWN:
                 targetField = fields[recentCoords.y + 1][recentCoords.x];
-                console.log(targetField.getHasCrate());
-                return targetField.type === GROUND;
-            default:
-                return false;
+                crateToCarry = targetField.getCrate();
+                if (crateToCarry) {
+                    blocked = !swapCratesIfGranted(crateToCarry, targetField, fields[recentCoords.y + 2][recentCoords.x]);
+                }
+                break;
         }
+        return {granted: targetFieldFree(targetField) && !blocked, crate: crateToCarry};
     };
+
+    self.checkDone = () => {
+        countFn(++moved);
+        let done = true;
+        iterate((i, j) => {
+            fields[i][j].detectCorrectCrate();
+            if (fields[i][j].type === SPOT && !fields[i][j].getCrate()) {
+                done = false;
+            }
+        });
+        if (done) {
+            solved = done;
+            console.log("YAHOO");
+        }
+        return done;
+    };
+
+    function targetFieldFree(targetField) {
+        return targetField.type === GROUND || targetField.type === SPOT;
+    }
+
+    function swapCratesIfGranted(crateToCarry, targetField, crateTargetField) {
+        if(!targetFieldFree(crateTargetField) || crateTargetField.getCrate() !== null) {
+            return false;
+        }
+        targetField.setCrate(null);
+        crateTargetField.setCrate(crateToCarry);
+        return true;
+    }
 
     function iterate(fn) {
         let i, j;
-        for(i = 0; i < settings.rows; i++) {
-            for(j = 0; j < settings.cols; j++) {
+        for(i = 0; i < game.board.length; i++) {
+            for(j = 0; j < game.board[i].length; j++) {
                 fn(i, j);
             }
         }
     }
 
-    function createFields() {
+    function createFields(game) {
         fields = [];
-        for(let i = 0; i < settings.rows; i++) {
+        for(let i = 0; i < game.board.length; i++) {
             fields[i] = [];
         }
+        game.spots.forEach(coord => {
+            fields[coord[0]][coord[1]] = new Field(coord[0],coord[1], SPOT);
+        });
+
         iterate((i, j) => {
-            if(i === 0 || j === 0 || i === settings.rows - 1 || j === settings.cols - 1) {
-                fields[i][j] = new Field(i, j, WALL);
-            } else {
-                fields[i][j] = new Field(i, j, GROUND);
+            if(!fields[i][j]){
+                fields[i][j] = new Field(i, j, game.board[i][j]);
             }
         });
     }
 
-    function initGame(_settings) {
-        if(_settings) {
-            const a = JSON.parse(_settings);
-            settings = {cols:a[0], rows:a[1], numMines:a[2], fieldsToOpen: a[0] * a[1] - a[2]};
-        }
-        createFields();
+    function initGame() {
+        game = $sok.gameCreator.createGame();
+        createFields(game);
         fillBoardUiFn(fields);
-        createMarioFn(fields[2][4].getNode());
-        createCrateFn(fields[2][3].getNode());
-        fields[2][3].setHasCrate(true);
+        createMarioFn(fields[game.mario[0]][game.mario[1]].getNode());
+        game.crates.forEach(c => {
+            fields[[c[0]]][c[1]].setCrate(createCrateFn(fields[c[0]][c[1]].getNode()));
+        });
+        iterate((i, j) => {
+            fields[i][j].detectCorrectCrate();
+        });
+        moved = 0;
     }
 })($sok.main = $sok.main || {});

@@ -19,8 +19,10 @@ $sok = window.$sok || {};
         wall: "wall",
         crate: "crate",
         row: "row",
+        spot: "spot",
         field: "field",
-        mario: "mario"
+        mario: "mario",
+        correct: "correct"
     };
 
     self.marioWalkSequences = marioWalkSequences;
