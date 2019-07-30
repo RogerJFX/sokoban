@@ -119,13 +119,17 @@ $ms = window.$sok || {};
                     if(crate) {
                         crate.style[styleProperty] = (storedProperty + $sok.constants.TILE_SIZE * 2 * f) + "px";
                     }
-                    mario.style.backgroundPosition = -10 * $sok.constants.TILE_SIZE + "px";
+
                     walking = false;
                     controller.checkDone();
                     queueWalk();
                 }
             }, 30);
         }
+    }
+
+    function stopMario() {
+        mario.style.backgroundPosition = -10 * $sok.constants.TILE_SIZE + "px";
     }
 
     const walkingQueue = [];
@@ -146,6 +150,7 @@ $ms = window.$sok || {};
                         walk(code, response.crate);
                     } else {
                         walkingQueue.length = 0;
+                        stopMario();
                     }
                 }
                 break;
@@ -155,6 +160,8 @@ $ms = window.$sok || {};
     function queueWalk() {
         if(walkingQueue.length !== 0) {
             nextEvent(walkingQueue.shift());
+        } else {
+            stopMario();
         }
     }
 
