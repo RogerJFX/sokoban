@@ -158,6 +158,11 @@ $ms = window.$sok || {};
         }
     }
 
+    function clearStates() {
+        stage.innerHTML = "";
+        moveStage.innerHTML = "";
+    }
+
 
     self.init = (_stage, _moveStage, _controller) => {
         stage = _stage;
@@ -167,6 +172,7 @@ $ms = window.$sok || {};
             .injectCreateNodeFn(createNode)
             .injectCreateMario(createMario)
             .injectCreateCrate(createCrate)
+            .injectUiInit(clearStates)
             .injectClassMap(classMap);
         document.onkeyup = (evt) => {
             if(walking || walkingQueue.length !== 0) {

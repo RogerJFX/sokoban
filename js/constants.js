@@ -1,7 +1,7 @@
 $sok = window.$sok || {};
 (function Constants(self) {
 
-    self.TILE_SIZE = 64;
+    self.TILE_SIZE = 56;
     self.LEFT = 37;
     self.UP = 38;
     self.RIGHT = 39;

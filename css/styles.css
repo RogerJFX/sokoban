@@ -17,6 +17,9 @@ body, html {
     margin: 20px auto;
     background: #888;
 }
+.stageWrapper {
+    position:relative;
+}
 #moveStage {
     z-index: 1;
     position: absolute;
@@ -30,10 +33,10 @@ body, html {
 
 .field {
     display: table-cell;
-    width: 64px;
-    height: 64px;
-    min-width: 64px;
-    min-height: 64px;
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    min-height: 56px;
     text-align: center;
     vertical-align: middle;
     border: 0;
@@ -47,41 +50,41 @@ body, html {
 }
 
 .ground {
-    background-image: url("../img/ground.png");
-    background-position: -320px;
+    background-image: url("../img/ground56.png");
+    background-position: -280px;
 }
 
 .spot {
-    background-image: url("../img/ground.png");
-    background-position: -128px;
+    background-image: url("../img/ground56.png");
+    background-position: -112px;
 }
 
 .wall {
-    background-image: url("../img/block.png");
-    background-position: -64px;
+    background-image: url("../img/block56.png");
+    background-position: -56px;
 }
 
 .crate {
-    width: 64px;
-    height: 64px;
-    min-width: 64px;
-    min-height: 64px;
-    background-image: url("../img/crate.png");
-    /*background-position: -64px;*/
-    background-position: -704px;
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    min-height: 56px;
+    background-image: url("../img/crate56.png");
+    /*background-position: -56px;*/
+    background-position: -616px;
     position: absolute;
 }
 /* Correctly placed crate */
 .correct {
-    background-position: -64px;
+    background-position: -56px;
 }
 
 .mario {
-    width: 64px;
-    height: 64px;
-    min-width: 64px;
-    min-height: 64px;
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    min-height: 56px;
     position: absolute;
-    background-image: url("../img/player.png");
-    background-position: -640px;
+    background-image: url("../img/player56.png");
+    background-position: -560px;
 }

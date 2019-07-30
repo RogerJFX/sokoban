@@ -1,0 +1,28 @@
+.table {
+    display: table;
+}
+
+.table .table-row {
+    display: table-row;
+}
+
+.table .table-row .table-cell {
+    display: table-cell;
+}
+
+.controls {
+    padding-left: 40px;
+}
+
+.controls .entry {
+    padding: 8px;
+    text-align: left;
+}
+
+.controls .entry button{
+    width: 120px;
+    height: 30px;
+    text-align: left;
+    font-weight: bold;
+    font-size:14px;
+}

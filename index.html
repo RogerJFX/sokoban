@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Sokoban</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/layout.css">
     <script src="js/constants.js"></script>
     <script src="js/gameCreator.js"></script>
     <script src="js/main.js"></script>
@@ -15,16 +16,33 @@
             $sok.main.notifyLoaded();
         });
     </script>
-
 </head>
 <body>
 <div class="outerContainer">
     <div class="container">
-        <div id="backstage"></div>
-        <div id="moveStage"></div>
+        <div class="table">
+            <div class="table-row">
+                <div class="table-cell">
+                    <div class="stageWrapper">
+                    <div id="backstage"></div>
+                    <div id="moveStage"></div>
+                    </div>
+                </div>
+                <div class="table-cell controls">
+                    <div class="entry">
+                        <span id="flagCountL">🚩&nbsp;</span><span id="moveCount">0</span>
+                    </div>
+                    <div class="entry">
+                        <button onclick="$sok.main.retryGame()">Retry</button>
+                    </div>
+                    <div class="entry">
+                        <button onclick="$sok.main.newGame()">Other Game</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <br />
-    <span id="flagCountL">🚩&nbsp;</span><span id="moveCount">0</span>
+</div>
 </div>
 </body>
 </html>

@@ -17,6 +17,7 @@ $sok = window.$sok || {};
     let createNodeUiFn;
     let createMarioFn;
     let createCrateFn;
+    let initUiFn;
 
     let countFn;
 
@@ -95,6 +96,11 @@ $sok = window.$sok || {};
         initGame(_settings);
     };
 
+    self.injectUiInit = (fn) => {
+        initUiFn = fn;
+        return self;
+    };
+
     self.marioMightWalk = (recentCoords, dir) => {
         if(solved) {
             return false;
@@ -151,6 +157,13 @@ $sok = window.$sok || {};
         return done;
     };
 
+    self.retryGame = () => {
+        initGame(true);
+    };
+    self.newGame = () => {
+        initGame(false);
+    };
+
     function targetFieldFree(targetField) {
         return targetField.type === GROUND || targetField.type === SPOT;
     }
@@ -189,9 +202,10 @@ $sok = window.$sok || {};
         });
     }
 
-    function initGame() {
-        game = $sok.gameCreator.createGame();
+    function initGame(retry) {
+        game = retry ? $sok.gameCreator.retryGame() : $sok.gameCreator.createGame();
         createFields(game);
+        initUiFn();
         fillBoardUiFn(fields);
         createMarioFn(fields[game.mario[0]][game.mario[1]].getNode());
         game.crates.forEach(c => {
@@ -201,5 +215,7 @@ $sok = window.$sok || {};
             fields[i][j].detectCorrectCrate();
         });
         moved = 0;
+        countFn(moved);
     }
+
 })($sok.main = $sok.main || {});
