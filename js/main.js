@@ -215,6 +215,7 @@ $sok = window.$sok || {};
             fields[i][j].detectCorrectCrate();
         });
         moved = 0;
+        solved = false;
         countFn(moved);
     }
 
