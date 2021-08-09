@@ -1,4 +1,4 @@
-$ms = window.$sok || {};
+$sok = window.$sok || {};
 
 (function Ui(self) {
 
